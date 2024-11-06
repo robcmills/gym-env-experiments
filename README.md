@@ -8,7 +8,7 @@ python3 -m venv gym_venv
 source gym_venv/bin/activate
 
 # Install dependencies
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 
 # Train and test the agent
 python3 train2.py
