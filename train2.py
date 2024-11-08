@@ -5,39 +5,24 @@ from agent import GridWorldAgent
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
+from stable_baselines3.common.env_checker import check_env
 import os
 
 env_name = "grid_gym/GridWorld-v0"
 save_dir = "./saved_models"
 
 def train_and_save_agent(total_timesteps=5000):
-    """
-    Train a PPO agent and save it to disk.
-    
-    Args:
-        total_timesteps (int): Number of timesteps to train for
-    
-    Returns:
-        model: Trained PPO model
-    """
-    # Create and wrap the environment
     env = gym.make(env_name, size=5)
-    env = Monitor(env)
+    # env = Monitor(env)
+    check_env(env)
     
-    # Initialize the agent
     model = PPO("MultiInputPolicy", env, verbose=1)
+    model.learn(total_timesteps=total_timesteps, progress_bar=True)
     
-    # Train the agent
-    model.learn(total_timesteps=total_timesteps)
-    
-    # Create directory if it doesn't exist
     os.makedirs(save_dir, exist_ok=True)
-    
-    # Save the model
     model_path = os.path.join(save_dir, f"{env_name}_ppo")
     model.save(model_path)
     print(f"Model saved to {model_path}")
-    
     return model
 
 def load_and_evaluate_agent():
@@ -107,4 +92,4 @@ def test_saved_agent(episodes=3):
 if __name__ == "__main__":
     train_and_save_agent()
     # mean_reward, std_reward = load_and_evaluate_agent()
-    test_saved_agent()
+    # test_saved_agent()
